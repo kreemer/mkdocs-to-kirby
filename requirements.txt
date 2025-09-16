@@ -1,0 +1,4 @@
+pre-commit~=4.2
+mkdocs
+mkdocs-material
+mkdocs-static-i18n
