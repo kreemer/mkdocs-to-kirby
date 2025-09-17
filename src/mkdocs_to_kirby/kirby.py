@@ -63,6 +63,13 @@ class KirbyStructure:
         return None
 
     def is_draft(self) -> bool:
+        if (
+            self.page
+            and "state" in self.page.meta
+            and str(self.page.meta["state"]).lower() == "draft"
+        ):
+            return True
+
         return False
 
     def load_kirby_blocks(self) -> dict[str, str]:
