@@ -1,4 +1,4 @@
-name: Run Bats Integration Tests
+name: Run Integration Tests
 
 on:
   pull_request:
@@ -7,11 +7,13 @@ on:
     branches: [main]
 
 jobs:
-  bats-tests:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Setup Python
         uses: actions/setup-python@v4
