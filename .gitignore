@@ -4,3 +4,4 @@ __pycache__
 examples/**/mkdocs.yml
 examples/**/site
 examples/**/kirby-content
+dist/

@@ -7,7 +7,7 @@
 		},
 		"ghcr.io/devcontainers/features/github-cli:1": {}
 	},
-	"postCreateCommand": "pip3 install -r requirements.txt && pre-commit install",
+	"postCreateCommand": "pip3 install -e . --group dev && pre-commit install",
 	"customizations": {
 		"vscode": {
 			"extensions": [
