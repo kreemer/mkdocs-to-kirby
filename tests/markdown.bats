@@ -33,7 +33,9 @@ Title: Home
 
 ----
 
-Text: # Home
+Text:
+
+# Home
 
 Hello
 EOF
@@ -49,11 +51,60 @@ EOF
 
     run cat kirby-content/0_listed_section/1_page2/doc.md
     assert_success
-    assert_output --stdin <<EOF
+    assert_output --partial --stdin <<EOF
 Title: Page-2
 
 ----
-
-Text:
 EOF
+}
+
+
+@test "Simple page1 with correct link" {
+    testDir=${fixturesDir}/ok-mkdocs-simple
+    cd ${testDir}
+    generate_silent_mkdocs_site
+    assert_dir_exists "kirby-content"
+    assert_file_exists "kirby-content/0_listed_section/1_page2/doc.md"
+
+    run cat kirby-content/0_listed_section/1_page2/doc.md
+    assert_success
+    assert_output --partial "Link to page1 [here](../page1)"
+}
+
+@test "Simple page2 with correct link" {
+    testDir=${fixturesDir}/ok-mkdocs-simple
+    cd ${testDir}
+    generate_silent_mkdocs_site
+    assert_dir_exists "kirby-content"
+    assert_file_exists "kirby-content/0_listed_section/2_page1/doc.md"
+
+    run cat kirby-content/0_listed_section/2_page1/doc.md
+    assert_success
+    assert_output --partial "Link to page2 [here](../page2)"
+}
+
+@test "Asset link rewrite" {
+    testDir=${fixturesDir}/ok-mkdocs-assets
+    cd ${testDir}
+    generate_silent_mkdocs_site
+    assert_dir_exists "kirby-content"
+    assert_file_exists "kirby-content/doc.md"
+
+    run cat kirby-content/doc.md
+    assert_success
+    assert_output --partial "Link Asset ![Asset](my_image.png)"
+
+    assert_file_exists "kirby-content/my_image.png"
+}
+
+@test "Link to parent siblings" {
+    testDir=${fixturesDir}/ok-mkdocs-simple
+    cd ${testDir}
+    generate_silent_mkdocs_site
+    assert_dir_exists "kirby-content"
+    assert_file_exists "kirby-content/0_listed_section/unlisted/doc.md"
+
+    run cat kirby-content/0_listed_section/unlisted/doc.md
+    assert_success
+    assert_output --partial "[Hello](../../unlisted_section/hello)"
 }
