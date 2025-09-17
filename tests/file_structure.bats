@@ -77,3 +77,13 @@ teardown() {
     assert_dir_exists "kirby-content"
     assert_file_exists "kirby-content/doc.en.md"
 }
+
+
+@test "build an mkdocs site with a draft page" {
+    testDir=${fixturesDir}/ok-mkdocs-simple
+    cd ${testDir}
+    generate_mkdocs_site
+    assert_not_empty_site
+    assert_dir_exists "kirby-content"
+    assert_file_exists "kirby-content/unlisted_section/_draft/doc.md"
+}

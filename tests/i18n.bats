@@ -269,3 +269,22 @@ Text:
 EOF
     assert_file_exists "kirby-content/0_section/3_page6/image_en.png"
 }
+
+@test "Creating page with i18n plugin drafts are correctly marked" {
+    testDir=${fixturesDir}/ok-mkdocs-i18n
+    cd ${testDir}
+    generate_mkdocs_site
+    assert_dir_exists "kirby-content"
+    assert_file_exists "kirby-content/0_section/_page7/doc.de.md"
+    assert_file_exists "kirby-content/0_section/_page7/doc.en.md"
+}
+
+
+@test "Creating page with i18n plugin translated drafts are correctly marked" {
+    testDir=${fixturesDir}/ok-mkdocs-i18n
+    cd ${testDir}
+    generate_mkdocs_site
+    assert_dir_exists "kirby-content"
+    assert_file_exists "kirby-content/0_section/_page8/doc.de.md"
+    assert_file_exists "kirby-content/0_section/5_page8/doc.en.md"
+}
