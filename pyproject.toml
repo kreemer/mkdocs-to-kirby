@@ -8,7 +8,7 @@ description = "Mkdocs plugin to kirby content structure"
 readme = { file = "README.md", content-type = "text/markdown" }
 license = {text = "MIT"}
 keywords = ["mkdocs", "kirby", "plugin"]
-urls = {Homepage = "https://github.com/id-unibe-ch/mkdocs-to-kirby"}
+urls = {Homepage = "https://github.com/kreemer/mkdocs-to-kirby"}
 version = "0.10.0"
 requires-python = ">=3.11"
 dependencies = ["mkdocs>=1.0"]
