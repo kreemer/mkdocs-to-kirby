@@ -1,13 +1,21 @@
-#!/usr/bin/env bats
-##
-# These are helper variables and functions written in Bash. It's like writing in your Terminal!
-# Feel free to optimize these, or even run them in your own Terminal.
-#
+#!/usr/bin/env bash
 
-rootDir=$(pwd)
-fixturesDir=${rootDir}/examples
-testDir=''
+_common_setup() {
+    load 'test_helper/bats-support/load'
+    load 'test_helper/bats-assert/load'
+    load 'test_helper/bats-file/load'
+}
 
+_common_teardown() {
+    echo "Teardown"
+    dir=$1
+    echo "Cleaning ${dir}"
+    rm -rf ${dir}/site/
+    rm -f ${dir}/mkdocs.yml
+    if [ -f "${dir}/clean.sh" ]; then
+        ${dir}/clean.sh
+    fi
+}
 debugger() {
     echo "--- STATUS ---"
     if [ $status -eq 0 ]
@@ -27,7 +35,7 @@ debugger() {
     echo "--------------"
 }
 
-assertGen() {
+generate_mkdocs_site() {
     if [ -f mkdocs-test.yml ]
     then
         cp mkdocs-test.yml mkdocs.yml
@@ -37,36 +45,36 @@ assertGen() {
     [ "$status" -eq 0 ]
 }
 
-assertFileExists() {
-    run cat $1
+generate_silent_mkdocs_site() {
+    if [ -f mkdocs-test.yml ]
+    then
+        cp mkdocs-test.yml mkdocs.yml
+    fi
+    run mkdocs build -q
+    debugger
     [ "$status" -eq 0 ]
 }
 
-assertFileNotExists() {
-    run cat $1
-    [ "$status" -ne 0 ]
+assert_not_empty_site() {
+    assert_file_exists site/index.html
 }
 
-assertValidSite() {
-    assertFileExists site/index.html
+assert_empty_site() {
+    assert_file_not_exists site/index.html
 }
 
-assertEmptySite() {
-    assertFileNotExists site/index.html
-}
-
-assertServeSuccess() {
+assert_serve_success() {
     run pgrep -x mkdocs
     debugger
     [ ! -z "$status" ]
 }
 
-assertParGrep() {
+assert_par_grep() {
     cat site/$1/index.html | \
         awk '/<div class="col-md-9" role="main">/,/<footer class="col-md-12">/' | \
         sed '1d; $d'  | head -n -3 > site/$1.grepout
     echo "--------------"
-    echo "-_---File-----"
+    echo "-----File-----"
     echo `pwd`/site/$1/index.html
     echo "-----Grep results-----"
     run diff --ignore-blank-lines --ignore-all-space $1.grepout site/$1.grepout
@@ -81,36 +89,4 @@ check_site_name() {
     directory_name=${PWD##*/}
     echo "mkdocs site_name: $site_name, directory: $directory_name"
     [ "$site_name" == "$directory_name" ]
-}
-
-##
-# These are special life cycle methods for Bats (Bash automated testing).
-# setup() is ran before every test, teardown() is ran after every test.
-#
-
-teardown() {
-    echo "Cleaning ${testDir}"
-    rm -rf ${testDir}/site/
-    rm -f ${testDir}/mkdocs.yml
-    if [ -f "${testDir}/clean.sh" ]; then
-        ${testDir}/clean.sh
-    fi
-}
-
-##
-# Test suites.
-#
-
-@test "build an empty mkdocs site with minimal configuration" {
-    testDir=${fixturesDir}/ok-empty
-    cd ${testDir}
-    assertGen
-    assertEmptySite
-}
-
-@test "build an empty mkdocs site with configuration" {
-    testDir=${fixturesDir}/ok-mkdocs-config
-    cd ${testDir}
-    assertGen
-    assertEmptySite
 }

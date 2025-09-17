@@ -1,0 +1,6 @@
+site_name: ok-mkdocs-language
+plugins:
+- mkdocs-to-kirby:
+    default_language: en
+nav:
+- index.md

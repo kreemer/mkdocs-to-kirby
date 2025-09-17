@@ -1,0 +1,11 @@
+site_name: ok-mkdocs-simple
+plugins:
+- mkdocs-to-kirby
+nav:
+- index.md
+- Listed Section:
+  - listed_section/index.md
+  - Page 1: listed_section/page2.md
+  - Page 2: listed_section/page1.md
+- Unlisted Section:
+  - Hello: unlisted_section/hello.md
