@@ -13,13 +13,19 @@ from mkdocs.structure.nav import Section
 
 
 class KirbyStructure:
-    def __init__(self, url: str, parent: Union[None, "KirbyStructure"] = None) -> None:
+    def __init__(
+        self,
+        url: str,
+        parent: Union[None, "KirbyStructure"] = None,
+        language: Union[str, None] = None,
+    ) -> None:
         self.url = url
         self.children = list()
         self.page = None  # type: Union[Page, None]
         self.number = None  # type: Union[int, None]
         self.parent = parent
         self.assets = {}
+        self.language = language
 
     def add_child(self, child: "KirbyStructure") -> None:
         self.children.append(child)
@@ -85,6 +91,7 @@ class KirbyStructure:
                     fixed_link = self._fix_link(original_link)
                     return f"[{match.group(1)}]({fixed_link})"
 
+                # Fix assets links in markdown text
                 def replace_asset(match: re.Match) -> str:
                     if not self.page:
                         return match.group(0)
@@ -106,6 +113,21 @@ class KirbyStructure:
                         self.assets[name] = path
 
                     return f"![{match.group(1)}]({name})"
+
+                # Fix i18n wrongfully translated links
+                def replace_i18n_link(match: re.Match) -> str:
+                    if not self.language:
+                        return match.group(0)
+
+                    if match.group(2).endswith(f".{self.language}.md"):
+                        fixed_link = match.group(2)[: -(len(self.language) + 4)] + ".md"
+                        return f"[{match.group(1)}]({fixed_link})"
+
+                    return match.group(0)
+
+                value = re.sub(
+                    r"(?<!!)\[([^\]]+)\]\(([^)]+)\)", replace_i18n_link, value
+                )
 
                 value = re.sub(r"(?<!!)\[([^\]]+)\]\(([^)]+)\)", replace_link, value)
 
@@ -149,13 +171,18 @@ class KirbyStructure:
 
 class Kirby:
     def __init__(
-        self, config: MkdocsToKirbyPluginConfig, nav: Navigation, logger: Logger
+        self,
+        config: MkdocsToKirbyPluginConfig,
+        nav: Navigation,
+        logger: Logger,
+        language: Union[str, None] = None,
     ) -> None:
         self.config = config
         self.navigation = nav
         self.logger = logger
         self.pages = list()
-        self.kirby_structure = KirbyStructure("")
+        self.kirby_structure = KirbyStructure("", language=language)
+        self.language = language
 
     def is_listed(self, page: Page) -> bool:
         """Determine if a page should be listed in the navigation.
@@ -169,7 +196,7 @@ class Kirby:
 
         return page in self.navigation.pages
 
-    def register_page(self, page: Page) -> None:
+    def register_page(self, page: Page, is_default_language_build: bool) -> None:
         """Register a page in the Kirby structure.
 
         Args:
@@ -179,6 +206,12 @@ class Kirby:
         self.pages.append(page)
 
         parts = page.url.strip("/").split("/")
+
+        if not is_default_language_build:
+            if len(parts) == 1:
+                parts[0] = ""
+            else:
+                parts.pop(0)
 
         if len(parts) == 1 and parts[0] == "":
             structure = self.kirby_structure
@@ -202,7 +235,9 @@ class Kirby:
             (child for child in structure.children if child.url == current_part), None
         )
         if not found:
-            found = KirbyStructure(current_part, parent=structure)
+            found = KirbyStructure(
+                current_part, parent=structure, language=self.language
+            )
             structure.add_child(found)
 
             self.logger.debug(f"{__name__}: Added new node: {current_part}")
@@ -229,7 +264,6 @@ class Kirby:
         self.logger.debug(f"{__name__}: Enumerating numbering")
 
         number = 0
-
         for item in items:
             if isinstance(item, Page):
                 if structure.page == item and structure.page is not None:
@@ -296,4 +330,4 @@ class Kirby:
                 shutil.copy2(asset_path, target_asset_path)
 
         for child in structure.children:
-            self.build_structure(child)
+            self.build_structure(child, language)

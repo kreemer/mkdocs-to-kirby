@@ -1,0 +1,13 @@
+site_name: ok-mkdocs-i18n
+plugins:
+- mkdocs-to-kirby
+- i18n:
+    docs_structure: suffix
+    languages:
+      - locale: de
+        default: true
+        name: Deutsch
+        build: true
+      - locale: en
+        name: English
+        build: true
