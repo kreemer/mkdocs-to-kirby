@@ -44,8 +44,6 @@ class MkdocsToKirbyPlugin(BasePlugin[MkdocsToKirbyPluginConfig]):
         )
         self.kirby = None
 
-    def on_pre_build(self, *, config: MkDocsConfig) -> None:
-        """Clean output directory before building."""
         logger.debug(f"{__name__}: Clean output directory before building")
         output_dir = Path(self.config.output_dir)
         if output_dir.exists() and output_dir.is_dir():
@@ -73,7 +71,14 @@ class MkdocsToKirbyPlugin(BasePlugin[MkdocsToKirbyPluginConfig]):
         """
 
         logger.debug(f"{__name__}: Processing navigation structure")
-        self.kirby = Kirby(self.config, nav, logger)
+
+        language = self.config.default_language
+        if "i18n" in config.plugins:
+            i18n_plugin = config.plugins["i18n"]
+            if hasattr(i18n_plugin, "current_language"):
+                language = i18n_plugin.current_language  # type: ignore
+
+        self.kirby = Kirby(self.config, nav, logger, language)
 
         return nav
 
@@ -88,7 +93,13 @@ class MkdocsToKirbyPlugin(BasePlugin[MkdocsToKirbyPluginConfig]):
             logger.warning(f"{__name__}: Kirby instance is not initialized.")
             return markdown
 
-        self.kirby.register_page(page)
+        is_default_language_build = True
+        if "i18n" in config.plugins:
+            i18n_plugin = config.plugins["i18n"]
+            if hasattr(i18n_plugin, "is_default_language_build"):
+                is_default_language_build = i18n_plugin.is_default_language_build  # type: ignore
+
+        self.kirby.register_page(page, is_default_language_build)
 
     def on_post_build(self, *, config: MkDocsConfig) -> None:
         """Called after the site has been built.
@@ -96,6 +107,7 @@ class MkdocsToKirbyPlugin(BasePlugin[MkdocsToKirbyPluginConfig]):
         Args:
             config: Global configuration object.
         """
+
         logger.debug(f"{__name__}: Post build processing")
         if not self.kirby:
             logger.warning(f"{__name__}: Kirby instance is not initialized.")
