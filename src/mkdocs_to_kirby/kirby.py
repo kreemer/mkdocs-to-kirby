@@ -114,7 +114,10 @@ class KirbyStructure:
             if markdown != "":
                 markdown = markdown + f"----\n\n"
 
-            markdown = f"{markdown}{key.title()}: {value}\n\n"
+            markdown = f"{markdown}{key.title()}:"
+            if not value.startswith("\n"):
+                markdown = f"{markdown} "
+            markdown = f"{markdown}{value}\n\n"
 
         return markdown
 
