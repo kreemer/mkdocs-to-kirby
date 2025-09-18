@@ -56,9 +56,9 @@ EOF
     cd ${testDir}
     generate_silent_mkdocs_site
     assert_dir_exists "kirby-content"
-    assert_file_exists "kirby-content/1_page1/doc.de.md"
+    assert_file_exists "kirby-content/0_page1/doc.de.md"
 
-    run cat kirby-content/1_page1/doc.de.md
+    run cat kirby-content/0_page1/doc.de.md
     assert_output --stdin <<EOF
 Title: seite1
 
@@ -68,8 +68,8 @@ Text:
 
 Deutsch
 EOF
-    assert_file_exists "kirby-content/1_page1/doc.en.md"
-    run cat kirby-content/1_page1/doc.en.md
+    assert_file_exists "kirby-content/0_page1/doc.en.md"
+    run cat kirby-content/0_page1/doc.en.md
     assert_output --stdin <<EOF
 Title: page1
 
@@ -87,9 +87,9 @@ EOF
     cd ${testDir}
     generate_silent_mkdocs_site
     assert_dir_exists "kirby-content"
-    assert_file_exists "kirby-content/2_page2/doc.de.md"
+    assert_file_exists "kirby-content/1_page2/doc.de.md"
 
-    run cat kirby-content/2_page2/doc.de.md
+    run cat kirby-content/1_page2/doc.de.md
     assert_output --stdin <<EOF
 Title: page2
 
@@ -99,8 +99,8 @@ Text:
 
 [here](../page1)
 EOF
-    assert_file_exists "kirby-content/2_page2/doc.en.md"
-    run cat kirby-content/2_page2/doc.en.md
+    assert_file_exists "kirby-content/1_page2/doc.en.md"
+    run cat kirby-content/1_page2/doc.en.md
     assert_output --stdin <<EOF
 Title: page2
 
@@ -117,9 +117,9 @@ EOF
     cd ${testDir}
     generate_mkdocs_site
     assert_dir_exists "kirby-content"
-    assert_file_exists "kirby-content/3_page3/doc.de.md"
+    assert_file_exists "kirby-content/2_page3/doc.de.md"
 
-    run cat kirby-content/3_page3/doc.de.md
+    run cat kirby-content/2_page3/doc.de.md
     assert_output --stdin <<EOF
 Title: page3
 
@@ -129,8 +129,8 @@ Text:
 
 [hier](../page1)
 EOF
-    assert_file_exists "kirby-content/3_page3/doc.en.md"
-    run cat kirby-content/3_page3/doc.en.md
+    assert_file_exists "kirby-content/2_page3/doc.en.md"
+    run cat kirby-content/2_page3/doc.en.md
     assert_output --stdin <<EOF
 Title: page3
 
@@ -148,9 +148,9 @@ EOF
     cd ${testDir}
     generate_mkdocs_site
     assert_dir_exists "kirby-content"
-    assert_file_exists "kirby-content/0_section/doc.de.md"
+    assert_file_exists "kirby-content/3_section/doc.de.md"
 
-    run cat kirby-content/0_section/doc.de.md
+    run cat kirby-content/3_section/doc.de.md
     assert_output --stdin <<EOF
 Title: Section
 
@@ -160,8 +160,8 @@ Text:
 
 Test
 EOF
-    assert_file_exists "kirby-content/0_section/doc.en.md"
-    run cat kirby-content/0_section/doc.en.md
+    assert_file_exists "kirby-content/3_section/doc.en.md"
+    run cat kirby-content/3_section/doc.en.md
     assert_output --stdin <<EOF
 Title: Section
 
@@ -179,9 +179,9 @@ EOF
     cd ${testDir}
     generate_mkdocs_site
     assert_dir_exists "kirby-content"
-    assert_file_exists "kirby-content/0_section/1_page4/doc.de.md"
+    assert_file_exists "kirby-content/3_section/0_page4/doc.de.md"
 
-    run cat kirby-content/0_section/1_page4/doc.de.md
+    run cat kirby-content/3_section/0_page4/doc.de.md
     assert_output --stdin <<EOF
 Title: seite4
 
@@ -191,8 +191,8 @@ Text:
 
 Hallo
 EOF
-    assert_file_exists "kirby-content/0_section/1_page4/doc.en.md"
-    run cat kirby-content/0_section/1_page4/doc.en.md
+    assert_file_exists "kirby-content/3_section/0_page4/doc.en.md"
+    run cat kirby-content/3_section/0_page4/doc.en.md
     assert_output --stdin <<EOF
 Title: page4
 
@@ -211,9 +211,9 @@ EOF
     cd ${testDir}
     generate_mkdocs_site
     assert_dir_exists "kirby-content"
-    assert_file_exists "kirby-content/0_section/2_page5/doc.de.md"
+    assert_file_exists "kirby-content/3_section/1_page5/doc.de.md"
 
-    run cat kirby-content/0_section/2_page5/doc.de.md
+    run cat kirby-content/3_section/1_page5/doc.de.md
     assert_output --stdin <<EOF
 Title: page5
 
@@ -223,8 +223,8 @@ Text:
 
 ![image](image.png)
 EOF
-    assert_file_exists "kirby-content/0_section/2_page5/doc.en.md"
-    run cat kirby-content/0_section/2_page5/doc.en.md
+    assert_file_exists "kirby-content/3_section/1_page5/doc.en.md"
+    run cat kirby-content/3_section/1_page5/doc.en.md
     assert_output --stdin <<EOF
 Title: page5
 
@@ -234,7 +234,7 @@ Text:
 
 ![image](image.png)
 EOF
-    assert_file_exists "kirby-content/0_section/2_page5/image.png"
+    assert_file_exists "kirby-content/3_section/1_page5/image.png"
 }
 
 @test "Creating page with i18n plugin section translated assets are correctly copied" {
@@ -242,9 +242,9 @@ EOF
     cd ${testDir}
     generate_mkdocs_site
     assert_dir_exists "kirby-content"
-    assert_file_exists "kirby-content/0_section/3_page6/doc.de.md"
+    assert_file_exists "kirby-content/3_section/2_page6/doc.de.md"
 
-    run cat kirby-content/0_section/3_page6/doc.de.md
+    run cat kirby-content/3_section/2_page6/doc.de.md
     assert_output --stdin <<EOF
 Title: seite6
 
@@ -254,10 +254,10 @@ Text:
 
 ![bild](image_de.png)
 EOF
-    assert_file_exists "kirby-content/0_section/3_page6/image_de.png"
+    assert_file_exists "kirby-content/3_section/2_page6/image_de.png"
 
-    assert_file_exists "kirby-content/0_section/3_page6/doc.en.md"
-    run cat kirby-content/0_section/3_page6/doc.en.md
+    assert_file_exists "kirby-content/3_section/2_page6/doc.en.md"
+    run cat kirby-content/3_section/2_page6/doc.en.md
     assert_output --stdin <<EOF
 Title: page6
 
@@ -267,7 +267,7 @@ Text:
 
 ![image](image_en.png)
 EOF
-    assert_file_exists "kirby-content/0_section/3_page6/image_en.png"
+    assert_file_exists "kirby-content/3_section/2_page6/image_en.png"
 }
 
 @test "Creating page with i18n plugin drafts are correctly marked" {
@@ -275,8 +275,8 @@ EOF
     cd ${testDir}
     generate_mkdocs_site
     assert_dir_exists "kirby-content"
-    assert_file_exists "kirby-content/0_section/_page7/doc.de.md"
-    assert_file_exists "kirby-content/0_section/_page7/doc.en.md"
+    assert_file_exists "kirby-content/3_section/_page7/doc.de.md"
+    assert_file_exists "kirby-content/3_section/_page7/doc.en.md"
 }
 
 
@@ -285,6 +285,6 @@ EOF
     cd ${testDir}
     generate_mkdocs_site
     assert_dir_exists "kirby-content"
-    assert_file_exists "kirby-content/0_section/_page8/doc.de.md"
-    assert_file_exists "kirby-content/0_section/5_page8/doc.en.md"
+    assert_file_exists "kirby-content/3_section/_page8/doc.de.md"
+    assert_file_exists "kirby-content/3_section/4_page8/doc.en.md"
 }

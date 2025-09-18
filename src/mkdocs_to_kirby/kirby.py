@@ -173,7 +173,7 @@ class KirbyStructure:
         return parsed_path
 
     def __repr__(self) -> str:
-        return f"KirbyStructure(url={self.url}, page_exists={ 'true' if self.page else 'false'}, children={self.children})"
+        return f"KirbyStructure(url={self.url}, number={self.number}, page_exists={ 'true' if self.page else 'false'}, children={self.children})"
 
 
 class Kirby:
@@ -213,7 +213,6 @@ class Kirby:
         self.pages.append(page)
 
         parts = page.url.strip("/").split("/")
-
         if not is_default_language_build:
             if len(parts) == 1:
                 parts[0] = ""
@@ -274,10 +273,13 @@ class Kirby:
         for item in items:
             if isinstance(item, Page):
                 if structure.page == item and structure.page is not None:
-                    structure.assign_number(number)
+                    if os.path.basename(str(item.file.src_path)).startswith("index"):
+                        continue
+                    # structure.assign_number(number)
                     self.logger.debug(
                         f"{__name__}: Assigned number {number} to page {structure.page.title}"
                     )
+                    number += 1
                 else:
                     child_structure = next(
                         (child for child in structure.children if child.page == item),
@@ -288,7 +290,7 @@ class Kirby:
                         self.logger.debug(
                             f"{__name__}: Assigned number {number} to page {child_structure.page}"
                         )
-                number += 1
+                        number += 1
             elif isinstance(item, Section):
                 child_structure = next(
                     (
@@ -300,6 +302,9 @@ class Kirby:
                 )
                 if child_structure and isinstance(child_structure, KirbyStructure):
                     self.enumerate_numbering(item.children, child_structure)
+                    if child_structure.page is not None:
+                        child_structure.assign_number(number)
+                        number += 1
 
     def build_structure(
         self, structure: KirbyStructure, language: Union[str, None] = None
