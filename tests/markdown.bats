@@ -47,9 +47,9 @@ EOF
     cd ${testDir}
     generate_silent_mkdocs_site
     assert_dir_exists "kirby-content"
-    assert_file_exists "kirby-content/0_listed_section/1_page2/doc.md"
+    assert_file_exists "kirby-content/0_listed_section/0_page2/doc.md"
 
-    run cat kirby-content/0_listed_section/1_page2/doc.md
+    run cat kirby-content/0_listed_section/0_page2/doc.md
     assert_success
     assert_output --partial --stdin <<EOF
 Title: Page-2
@@ -64,9 +64,9 @@ EOF
     cd ${testDir}
     generate_silent_mkdocs_site
     assert_dir_exists "kirby-content"
-    assert_file_exists "kirby-content/0_listed_section/1_page2/doc.md"
+    assert_file_exists "kirby-content/0_listed_section/0_page2/doc.md"
 
-    run cat kirby-content/0_listed_section/1_page2/doc.md
+    run cat kirby-content/0_listed_section/0_page2/doc.md
     assert_success
     assert_output --partial "Link to page1 [here](../page1)"
 }
@@ -76,9 +76,9 @@ EOF
     cd ${testDir}
     generate_silent_mkdocs_site
     assert_dir_exists "kirby-content"
-    assert_file_exists "kirby-content/0_listed_section/2_page1/doc.md"
+    assert_file_exists "kirby-content/0_listed_section/1_page1/doc.md"
 
-    run cat kirby-content/0_listed_section/2_page1/doc.md
+    run cat kirby-content/0_listed_section/1_page1/doc.md
     assert_success
     assert_output --partial "Link to page2 [here](../page2)"
 }
