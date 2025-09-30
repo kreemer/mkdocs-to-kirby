@@ -108,3 +108,40 @@ EOF
     assert_success
     assert_output --partial "[Hello](../../unlisted_section/hello)"
 }
+
+@test "Link to children" {
+    testDir=${fixturesDir}/ok-mkdocs-links
+    cd ${testDir}
+    generate_silent_mkdocs_site
+    assert_dir_exists "kirby-content"
+    assert_file_exists "kirby-content/doc.md"
+
+    run cat kirby-content/doc.md
+    assert_success
+    assert_output --partial "[Section1](./section1/)"
+    assert_output --partial "[SubSection1 - Page1](./section1/subsection1/page1)"
+}
+
+@test "Link to neightbors" {
+    testDir=${fixturesDir}/ok-mkdocs-links
+    cd ${testDir}
+    generate_silent_mkdocs_site
+    assert_dir_exists "kirby-content"
+    assert_file_exists "kirby-content/0_section1/subsection1/page2/doc.md"
+
+    run cat kirby-content/0_section1/subsection1/page2/doc.md
+    assert_success
+    assert_output --partial "[Page1](../page1)"
+}
+
+@test "Link to children of other section" {
+    testDir=${fixturesDir}/ok-mkdocs-links
+    cd ${testDir}
+    generate_silent_mkdocs_site
+    assert_dir_exists "kirby-content"
+    assert_file_exists "kirby-content/0_section1/subsection1/page2/doc.md"
+
+    run cat kirby-content/0_section1/subsection1/page2/doc.md
+    assert_success
+    assert_output --partial "[Page3](../../subsection2/page3)"
+}
