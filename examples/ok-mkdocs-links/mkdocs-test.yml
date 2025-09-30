@@ -1,0 +1,9 @@
+site_name: ok-mkdocs-links
+plugins:
+- mkdocs-to-kirby
+nav:
+- index.md
+- Section1:
+  - section1/index.md
+  - Subsection1:
+    - section1/subsection1/page1.md

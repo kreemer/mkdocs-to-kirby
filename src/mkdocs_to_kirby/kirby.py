@@ -166,9 +166,16 @@ class KirbyStructure:
             parsed_path = parsed_path[2:]
         if parsed_path.startswith("/"):
             parsed_path = parsed_path[1:]
+
         # Because Kirby pages lives in subfolders
         # we have to append ../ to the beginning of the path
-        parsed_path = f"../{parsed_path}"
+        if parsed_path.startswith("../"):
+            parsed_path = f"../{parsed_path}"
+        else:
+            if parsed_path.find("/") == -1:
+                parsed_path = f"../{parsed_path}"
+            else:
+                parsed_path = f"./{parsed_path}"
 
         return parsed_path
 
