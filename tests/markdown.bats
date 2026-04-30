@@ -145,3 +145,15 @@ EOF
     assert_success
     assert_output --partial "[Page3](../../subsection2/page3)"
 }
+
+@test "Link from index to virtual sibling" {
+    testDir=${fixturesDir}/ok-mkdocs-links
+    cd ${testDir}
+    generate_silent_mkdocs_site
+    assert_dir_exists "kirby-content"
+    assert_file_exists "kirby-content/0_section1/doc.md"
+
+    run cat kirby-content/0_section1/doc.md
+    assert_success
+    assert_output --partial "[test](./test)"
+}

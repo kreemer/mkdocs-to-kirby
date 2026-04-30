@@ -94,8 +94,9 @@ class KirbyStructure:
 
                 # Fix links in the markdown text
                 def replace_link(match: re.Match) -> str:
+                    index_site = self.page.file.name.startswith("index")
                     original_link = match.group(2)
-                    fixed_link = self._fix_link(original_link)
+                    fixed_link = self._fix_link(original_link, index_site)
                     return f"[{match.group(1)}]({fixed_link})"
 
                 # Fix assets links in markdown text
@@ -150,7 +151,7 @@ class KirbyStructure:
 
         return markdown
 
-    def _fix_link(self, link: str) -> str:
+    def _fix_link(self, link: str, is_index: bool) -> str:
         parsed_url = urlparse(link)
 
         if parsed_url.scheme or parsed_url.netloc:
@@ -172,7 +173,7 @@ class KirbyStructure:
         if parsed_path.startswith("../"):
             parsed_path = f"../{parsed_path}"
         else:
-            if parsed_path.find("/") == -1:
+            if parsed_path.find("/") == -1 and not is_index:
                 parsed_path = f"../{parsed_path}"
             else:
                 parsed_path = f"./{parsed_path}"
